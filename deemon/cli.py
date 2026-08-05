@@ -135,12 +135,16 @@ run.__doc__ = (
 @run.command(name='test')
 @click.option('-e', '--email', is_flag=True, help="Send plaintext test notification to configured email")
 @click.option('--email-html', is_flag=True, help="Send HTML test notification with sample release data")
+@click.option('-n', '--count', 'album_count', default=1, show_default=True, type=int,
+              help="Number of sample albums to include with --email-html")
 @click.option('-E', '--exclusions', metavar="URL", type=str, help="Test exclude regex pattern against URL")
-def test(email, email_html, exclusions):
+def test(email, email_html, album_count, exclusions):
     """Run tests on email configuration, exclusion filters, etc."""
     if email_html:
+        if album_count < 1:
+            return logger.error("Album count must be at least 1.")
         notification = notifier.Notify()
-        notification.test_html()
+        notification.test_html(album_count=album_count)
     elif email:
         notification = notifier.Notify()
         notification.test()

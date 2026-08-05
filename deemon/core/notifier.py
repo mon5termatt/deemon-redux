@@ -2,7 +2,7 @@ import logging
 import platform
 import smtplib
 import ssl
-from datetime import datetime
+from datetime import datetime, timedelta
 from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -16,21 +16,87 @@ from deemon.utils.repo import get_github_repo_url
 
 logger = logging.getLogger(__name__)
 
-SAMPLE_RELEASES = [
+SAMPLE_ALBUMS = [
     {
-        'release_date': datetime.now().strftime('%Y-%m-%d'),
-        'releases': [
-            {
-                'artist': 'deemon',
-                'album': 'Test Album (email preview)',
-                'cover': 'https://e-cdns-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg',
-                'url': 'https://www.deezer.com/album/302127',
-                'track_num': 12,
-                'record_type': 'album',
-            }
-        ],
-    }
+        'artist': 'Daft Punk',
+        'album': 'Discovery',
+        'cover': 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/250x250-000000-80-0-0.jpg',
+        'url': 'https://www.deezer.com/album/302127',
+        'track_num': 14,
+        'record_type': 'album',
+    },
+    {
+        'artist': 'Starjunk 95',
+        'album': 'Industrial Sunset Memories',
+        'cover': 'https://cdn-images.dzcdn.net/images/cover/e86b8ad7e35c453d0e30183b1d918dff/250x250-000000-80-0-0.jpg',
+        'url': 'https://www.deezer.com/us/album/877883752',
+        'track_num': 15,
+        'record_type': 'album',
+    },
+    {
+        'artist': 'Levity',
+        'album': 'Escapism Vol. 1',
+        'cover': 'https://cdn-images.dzcdn.net/images/cover/34242071e568912b435bdba6e9309934/250x250-000000-80-0-0.jpg',
+        'url': 'https://www.deezer.com/us/album/644769361',
+        'track_num': 7,
+        'record_type': 'album',
+    },
+    {
+        'artist': 'S3RL',
+        'album': 'Play It Loud',
+        'cover': 'https://cdn-images.dzcdn.net/images/cover/4346bb5bd4087401b5ef9a4603fbc987/250x250-000000-80-0-0.jpg',
+        'url': 'https://www.deezer.com/us/album/632821661',
+        'track_num': 1,
+        'record_type': 'single',
+    },
+    {
+        'artist': 'Rick Astley',
+        'album': 'The Best of Me',
+        'cover': 'https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/250x250-000000-80-0-0.jpg',
+        'url': 'https://www.deezer.com/us/album/901480252',
+        'track_num': 31,
+        'record_type': 'album',
+    },
+    {
+        'artist': 'deadmau5',
+        'album': 'W:/2016ALBUM/',
+        'cover': 'https://cdn-images.dzcdn.net/images/cover/35ac50100a4c47b3bfe7ea9278b7f54a/250x250-000000-80-0-0.jpg',
+        'url': 'https://www.deezer.com/album/750162921',
+        'track_num': 12,
+        'record_type': 'album',
+    },
 ]
+
+
+def build_sample_releases(album_count: int = 1) -> list:
+    """Build grouped sample release data for HTML email tests."""
+    if album_count < 1:
+        album_count = 1
+
+    albums = []
+    for i in range(album_count):
+        album = SAMPLE_ALBUMS[i % len(SAMPLE_ALBUMS)].copy()
+        if album_count > 1:
+            album['album'] = f"{album['album']} #{i + 1}"
+        albums.append(album)
+
+    today = datetime.now()
+    grouped = {}
+    for i, album in enumerate(albums):
+        # Spread albums across a few dates to exercise date headers.
+        offset_days = (i // 2) * 7
+        release_date = (today.replace(hour=0, minute=0, second=0, microsecond=0)
+                        - timedelta(days=offset_days))
+        date_key = release_date.strftime('%Y-%m-%d')
+        grouped.setdefault(date_key, []).append(album)
+
+    return [
+        {'release_date': release_date, 'releases': release_list}
+        for release_date, release_list in sorted(grouped.items(), reverse=True)
+    ]
+
+
+SAMPLE_RELEASES = build_sample_releases(1)
 
 
 class Notify:
@@ -114,12 +180,15 @@ class Notify:
         msg.set_content("Congrats! You'll now receive new release notifications.")
         self.send(msg, test=True)
 
-    def test_html(self):
+    def test_html(self, album_count: int = 1):
         """
         Send a test email using the HTML new-release notification template.
         """
-        self.releases = SAMPLE_RELEASES
-        self.subject = "deemon Test Notification (HTML)"
+        self.releases = build_sample_releases(album_count)
+        if album_count > 1:
+            self.subject = f"deemon Test Notification (HTML, {album_count} albums)"
+        else:
+            self.subject = "deemon Test Notification (HTML)"
         self.send(test=True)
 
     def expired_arl(self):
@@ -177,7 +246,7 @@ class Notify:
             release_date_str = datetime.strftime(release_date_ts, "%A, %B %d").replace(" 0", " ")
 
             new_release_list_header = f"""
-			<div class="album date" style="background-color:#f0f0f0; color:#6106e5;">
+			<div class="album date" style="background-color:#f0f0f0; color:#6106e5; flex:0 0 100%; width:100%;">
 				<span class="album date badge" style="color:#6106e5; border:1px solid #6106e5;">
 					{release_date_str}
 				</span>
@@ -199,19 +268,23 @@ class Notify:
                     album_info = f"{record_type} | {album['track_num']} track(s)"
             
                 new_release_list_item += f"""
-            <div class="album body" style="background-color:#f0f0f0; color:#404040;">
-				<div class="albumart">
-					<img src="{album['cover']}" alt="">
-				</div>
-				<div class="albuminfo" style="color:#404040;">
-					<div class="albumtitle" style="color:#404040;">
-						<a href="{album['url']}" style="color:#2f7a40;">{album['album']}</a>
-					</div>
-					<div>
-						<div class="artistname" style="color:#404040;">{album['artist']}</div>
-						<span style="color:#404040;">{album_info}</span>
-					</div>
-				</div>
+            <div class="album body" style="background-color:#f0f0f0; color:#404040; overflow:hidden; min-width:350px; margin:0 0 30px 0; box-sizing:border-box;">
+				<table class="album-row" role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; border-collapse:collapse; table-layout:fixed;">
+					<tr>
+						<td class="albumart" width="150" style="width:150px; max-width:150px; height:150px; max-height:150px; vertical-align:top; padding:0 20px 0 0; overflow:hidden;">
+							<a href="{album['url']}" style="display:block; width:150px; height:150px; overflow:hidden; line-height:0; text-decoration:none;">
+								<img src="{album['cover']}" alt="" width="150" height="150" style="width:150px !important; height:150px !important; max-width:150px !important; max-height:150px !important; display:block; border:0; border-radius:7px; object-fit:cover;">
+							</a>
+						</td>
+						<td class="albuminfo" style="vertical-align:top; color:#404040; word-wrap:break-word; overflow-wrap:anywhere;">
+							<div class="albumtitle" style="color:#404040; font-weight:bold; margin-top:5px;">
+								<a href="{album['url']}" style="color:#2f7a40; text-decoration:none;">{album['album']}</a>
+							</div>
+							<div class="artistname" style="color:#404040; font-style:italic; padding-bottom:10px;">{album['artist']}</div>
+							<span style="color:#404040;">{album_info}</span>
+						</td>
+					</tr>
+				</table>
 			</div>
                 """
 

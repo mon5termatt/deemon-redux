@@ -34,6 +34,12 @@ Use `test --email-html` to send a preview of the real new-release notification e
 $ deemon test --email-html
 ```
 
+To preview layout with multiple albums and date groupings:
+
+```bash
+$ deemon test --email-html --count 5
+```
+
 This is useful for confirming that HTML rendering and album cover images display correctly in your mail client.
 
 If you don't receive either test email, confirm your SMTP settings with your mail provider and check the logs for additional information.
