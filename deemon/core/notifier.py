@@ -53,7 +53,7 @@ SAMPLE_ALBUMS = [
         'artist': 'Rick Astley',
         'album': 'The Best of Me',
         'cover': 'https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/250x250-000000-80-0-0.jpg',
-        'url': 'https://www.deezer.com/us/album/901480252',
+        'url': 'https://link.deezer.com/s/341KFizIQ5HlVnNamEoAu',
         'track_num': 31,
         'record_type': 'album',
     },
