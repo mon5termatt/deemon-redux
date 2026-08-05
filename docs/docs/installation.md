@@ -40,7 +40,7 @@ pip install git+https://github.com/mon5termatt/deemon.git
 To install a specific release tag:
 
 ```bash
-pip install git+https://github.com/mon5termatt/deemon.git@v2.23
+pip install git+https://github.com/mon5termatt/deemon.git@v2.24
 ```
 
 ### Install from a local clone
@@ -74,7 +74,7 @@ Once installation completes, confirm deemon is available:
 
 ```bash
 deemon -V
-deemon 2.23
+deemon 2.24
 ```
 
 ## Step 4 - Initialize application data

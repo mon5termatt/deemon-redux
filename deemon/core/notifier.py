@@ -177,8 +177,8 @@ class Notify:
             release_date_str = datetime.strftime(release_date_ts, "%A, %B %d").replace(" 0", " ")
 
             new_release_list_header = f"""
-			<div class="album date">
-				<span class="album date badge">
+			<div class="album date" style="background-color:#f0f0f0; color:#6106e5;">
+				<span class="album date badge" style="color:#6106e5; border:1px solid #6106e5;">
 					{release_date_str}
 				</span>
 			</div>
@@ -199,17 +199,17 @@ class Notify:
                     album_info = f"{record_type} | {album['track_num']} track(s)"
             
                 new_release_list_item += f"""
-            <div class="album body">
+            <div class="album body" style="background-color:#f0f0f0; color:#404040;">
 				<div class="albumart">
-					<img src="{album['cover']}">
+					<img src="{album['cover']}" alt="">
 				</div>
-				<div class="albuminfo">
-					<div class="albumtitle">
-						<a href="{album['url']}">{album['album']}</a>
+				<div class="albuminfo" style="color:#404040;">
+					<div class="albumtitle" style="color:#404040;">
+						<a href="{album['url']}" style="color:#2f7a40;">{album['album']}</a>
 					</div>
 					<div>
-						<div class="artistname">{album['artist']}</div>
-						<span>{album_info}</span>
+						<div class="artistname" style="color:#404040;">{album['artist']}</div>
+						<span style="color:#404040;">{album_info}</span>
 					</div>
 				</div>
 			</div>
