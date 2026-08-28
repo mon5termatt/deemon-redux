@@ -9,7 +9,7 @@ import click
 import requests
 from packaging.version import parse as parse_version
 
-from deemon import __version__
+from deemon import __version__, __title__, __pypi_name__
 from deemon.cmd import download, rollback, backup, extra, tests, upgradelib
 from deemon.cmd.artistconfig import artist_lookup
 from deemon.cmd.monitor import Monitor
@@ -33,11 +33,11 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True,
              no_args_is_help=True)
 @click.option('--whats-new', is_flag=True, help="Show release notes from this version")
-@click.option('--init', is_flag=True, help="""Initialize deemon application data
+@click.option('--init', is_flag=True, help=f"""Initialize {__title__} application data
               directory. Warning: if directory exists, this will delete existing config and database.""")
 @click.option('--arl', help="Update ARL")
-@click.option('-P', '--profile', help="Specify profile to run deemon as")
-@click.version_option(__version__, '-V', '--version', message='deemon %(version)s')
+@click.option('-P', '--profile', help=f"Specify profile to run {__title__} as")
+@click.version_option(__version__, '-V', '--version', message=f'{__title__} %(version)s')
 @click.option('-v', '--verbose', is_flag=True, help="Show debug output")
 def run(whats_new, init, arl, verbose, profile):
     """Monitoring and alerting tool for new music releases using the Deezer API."""
@@ -47,11 +47,11 @@ def run(whats_new, init, arl, verbose, profile):
 
     setup_logger(log_level='DEBUG' if verbose else 'INFO', log_file=startup.get_log_file())
     logger = logging.getLogger(__name__)
-    logger.debug(f"deemon {__version__}")
+    logger.debug(f"{__title__} {__version__}")
     logger.debug(f"command: \"{' '.join([x for x in sys.argv[1:]])}\"")
     logger.debug("Python " + platform.python_version())
     logger.debug(platform.platform())
-    logger.debug(f"deemon appdata is located at {startup.get_appdata_dir()}")
+    logger.debug(f"{__title__} appdata is located at {startup.get_appdata_dir()}")
     
     if whats_new:
         return startup.get_changelog(__version__)
@@ -107,7 +107,7 @@ def run(whats_new, init, arl, verbose, profile):
             if parse_version(new_version).major > parse_version(__version__).major:
                 config.set('update_available', new_version, False)
                 print("*" * 80)
-                logger.info(f"deemon {parse_version(new_version).major} is available. "
+                logger.info(f"{__title__} {parse_version(new_version).major} is available. "
                             f"Please see the release notes before upgrading.")
                 logger.info(f"Release notes available at: {get_github_releases_url()}")
                 print("*" * 80)
@@ -116,9 +116,9 @@ def run(whats_new, init, arl, verbose, profile):
                 print("*" * 50)
                 logger.info(f"* New version is available: v{__version__} -> v{new_version}")
                 if config.release_channel() == "beta":
-                    logger.info("* To upgrade, run `pip install --upgrade --pre deemon`")
+                    logger.info(f"* To upgrade, run `pip install --upgrade --pre {__pypi_name__}`")
                 else:
-                    logger.info("* To upgrade, run `pip install --upgrade deemon`")
+                    logger.info(f"* To upgrade, run `pip install --upgrade {__pypi_name__}`")
                 print("*" * 50)
                 print("")
 
@@ -127,7 +127,7 @@ def run(whats_new, init, arl, verbose, profile):
 
 run.__doc__ = (
     "Monitoring and alerting tool for new music releases using the Deezer API.\n\n"
-    "deemon is a free and open source tool. To report issues or to contribute,\n"
+    f"{__title__} is a free and open source tool. To report issues or to contribute,\n"
     f"please visit {get_github_repo_url()}"
 )
 

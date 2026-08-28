@@ -16,7 +16,7 @@ parent: Commands
 ---
 **Warning: This feature is a working prototype and is provided as-is. It should work but it requires accurate local metadata when querying for track/album IDs.**
 
-Starting in v2.18, deemon includes a library upgrade script to upgrade your existing collection from MP3 to FLAC by generating a file containing track/album IDs to be used with the `download` command.
+Starting in v2.18, Deemon Redux includes a library upgrade script to upgrade your existing collection from MP3 to FLAC by generating a file containing track/album IDs to be used with the `download` command.
 
 ## Generate Track IDs
 To generate a file containing track IDs:

@@ -8,7 +8,7 @@ nav_order: 3
 {: .no_toc }
 
 
-deemon has some specific configuration parameters that can be defined in your 
+Deemon Redux has some specific configuration parameters that can be defined in your 
 config.json file.
 {: .fs-6 .fw-300 }
 
@@ -22,16 +22,16 @@ config.json file.
 
 ## Configuration Location
 Depending on your operating system, your config.json file will be located in 
-one of the locations below. When deemon is run with a command, it will 
+one of the locations below. When Deemon Redux is run with a command, it will 
 automatically generate a default config if an existing configuration file is 
 not present. For example: to generate this configuration file, run 
 `deemon refresh`.
 
-- **Linux**: /home/user/.config/deemon
+- **Linux**: /home/user/.config/deemon-redux
 
-- **macOS**: /User/user/Library/Application Support/deemon
+- **macOS**: /User/user/Library/Application Support/deemon-redux
 
-- **Windows**: %appdata%\deemon
+- **Windows**: %appdata%\deemon-redux
 
 ### Default Configuration (Version 2.19.2)
 ```json

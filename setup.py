@@ -22,10 +22,10 @@ with open(HERE / "requirements.txt", encoding="utf-8") as f:
     required = f.read().splitlines()
 
 README = (HERE / "README.md").read_text(encoding="utf-8")
-DESCRIPTION = "Monitor new releases by a specified list of artists and auto download using the deemix library"
+DESCRIPTION = "Deemon Redux — monitor new releases by artists and auto download using the deemix library"
 
 setup(
-    name="deemon",
+    name="deemon-redux",
     version=get_version(),
     author="digitalec",
     description=DESCRIPTION,
@@ -41,8 +41,11 @@ setup(
     include_package_data=True,
     python_requires=">=3.8",
     install_requires=required,
-    url="https://github.com/mon5termatt/deemon",
+    url="https://github.com/mon5termatt/deemon-redux",
     entry_points={
-        "console_scripts": ["deemon=deemon.__main__:main"],
+        "console_scripts": [
+            "deemon=deemon.__main__:main",
+            "deemon-redux=deemon.__main__:main",
+        ],
     },
 )

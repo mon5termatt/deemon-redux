@@ -1,8 +1,8 @@
-title: deemon
-description: Monitoring utility for new artist releases with email alerts and automated downloading via deemix
+title: Deemon Redux
+description: Deemon Redux is a monitoring utility for new artist releases with email alerts and automated downloading via deemix
 url: "https://mon5termatt.github.io"
-baseurl: "/deemon"
-repository: mon5termatt/deemon
+baseurl: "/deemon-redux"
+repository: mon5termatt/deemon-redux
 
 remote_theme: just-the-docs/just-the-docs@v0.10.0
 
@@ -14,8 +14,8 @@ plugins:
 permalink: pretty
 
 aux_links:
-  deemon on GitHub:
-    - "https://github.com/mon5termatt/deemon"
+  Deemon Redux on GitHub:
+    - "https://github.com/mon5termatt/deemon-redux"
 
 color_scheme: nil
 search_enabled: true

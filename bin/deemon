@@ -22,6 +22,6 @@ if [[ -x "${VENV_PYTHON}" ]]; then
   exec "${VENV_PYTHON}" -m deemon.__main__ "$@"
 fi
 
-echo "Error: deemon virtualenv not found at ${VENV_PYTHON}" >&2
+echo "Error: Deemon Redux virtualenv not found at ${VENV_PYTHON}" >&2
 echo "From repo root, run: python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && pip install -e ." >&2
 exit 127

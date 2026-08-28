@@ -21,7 +21,7 @@ If you wish to clear a particular setting for an artist, type 'none'. Providing 
 
 ```bash
 user@localhost:~$ deemon config ARTIST
-deemon Artist Configurator
+Deemon Redux Artist Configurator
 :: Configuring 'ARTIST' (Artist ID: ...)
 
 Bitrate [None]: 320

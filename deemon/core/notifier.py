@@ -10,7 +10,7 @@ from email.utils import formataddr, formatdate
 
 import pkgutil
 
-from deemon import __version__
+from deemon import __version__, __title__, __pypi_name__
 from deemon.core.config import Config as config
 from deemon.utils.repo import get_github_repo_url
 
@@ -103,7 +103,7 @@ class Notify:
 
     def __init__(self, new_releases: list = None):
         logger.debug(f"Sending notification for {new_releases} release(s)")
-        self.subject = "deemon Notification"
+        self.subject = f"{__title__} Notification"
         self.releases = new_releases
 
     def send(self, body=None, test=False):
@@ -157,7 +157,7 @@ class Notify:
             message = MIMEMultipart('mixed')
 
         message['To'] = config.smtp_recipient()
-        message['From'] = formataddr(('deemon', config.smtp_sender()))
+        message['From'] = formataddr((__title__, config.smtp_sender()))
         message['Subject'] = subject
         message['Date'] = formatdate(localtime=True)
 
@@ -176,7 +176,7 @@ class Notify:
         """
         Verify SMTP settings by sending test email
         """
-        msg = self.construct_header(subject="deemon Test Notification")
+        msg = self.construct_header(subject=f"{__title__} Test Notification")
         msg.set_content("Congrats! You'll now receive new release notifications.")
         self.send(msg, test=True)
 
@@ -186,16 +186,16 @@ class Notify:
         """
         self.releases = build_sample_releases(album_count)
         if album_count > 1:
-            self.subject = f"deemon Test Notification (HTML, {album_count} albums)"
+            self.subject = f"{__title__} Test Notification (HTML, {album_count} albums)"
         else:
-            self.subject = "deemon Test Notification (HTML)"
+            self.subject = f"{__title__} Test Notification (HTML)"
         self.send(test=True)
 
     def expired_arl(self):
         """
         Notify user of expired ARL
         """
-        msg = self.construct_header(subject="deemon - ARL expired")
+        msg = self.construct_header(subject=f"{__title__} - ARL expired")
         msg.set_content("Your ARL has expired. Please update your ARL to receive new releases.")
         self.send(msg)
 
@@ -203,7 +203,7 @@ class Notify:
         """
         Notify user of expired subscription
         """
-        msg = self.construct_header(subject="deemon - Subscription expired")
+        msg = self.construct_header(subject=f"{__title__} - Subscription expired")
         msg.set_content("Your Deezer subscription appears to have expired.")
         self.send(msg)
 
@@ -222,7 +222,7 @@ class Notify:
 
     def html_new_releases(self):
 
-        app_version = f"deemon {__version__}"
+        app_version = f"{__title__} {__version__}"
         py_version = f"python {platform.python_version()}"
         sys_version = f"{platform.system()} {platform.release()}"
 

@@ -73,7 +73,7 @@ class Search:
 
         while exit_search is False:
             self.clear()
-            print("deemon Interactive Search Client\n")
+            print("Deemon Redux Interactive Search Client\n")
             if len(self.queue_list) > 0:
                 self.display_options(options="(d) Download Queue  (Q) Show Queue")
             if query:
@@ -99,7 +99,7 @@ class Search:
                     continue
             
             self.clear()
-            print("deemon Interactive Search Client\n")
+            print("Deemon Redux Interactive Search Client\n")
             self.search_results = self.api.search_artist(search_query, config.query_limit())
             if not self.search_results['results']:
                 self.status_message = "No results found for: " + search_query
@@ -359,7 +359,7 @@ class Search:
         self.display_options(options=ui_options)
 
     def track_menu_header(self, album):
-        print("deemon Interactive Search Client")
+        print("Deemon Redux Interactive Search Client")
         print(f"Artist: {self.artist}  |  Album: {album['title']}\n")
 
     def track_menu(self, album):

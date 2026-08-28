@@ -6,6 +6,7 @@ from pathlib import Path
 import requests
 from packaging.version import parse as parse_version
 
+from deemon import __appdata_name__, __pypi_name__
 from deemon.utils.repo import get_github_api_repo_url
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,7 @@ def get_appdata_dir():
     """
     Get appdata directory where configuration and data is stored
     """
-    return get_appdata_root() / 'deemon'
+    return get_appdata_root() / __appdata_name__
 
 
 def get_backup_dir():
@@ -63,18 +64,18 @@ def get_config():
 
 
 def get_database():
-    return get_appdata_dir() / 'deemon.db'
+    return get_appdata_dir() / f'{__appdata_name__}.db'
 
 
 def get_log_file():
     """
     Get path to log file
     """
-    return Path(get_appdata_dir() / 'logs' / 'deemon.log')
+    return Path(get_appdata_dir() / 'logs' / f'{__appdata_name__}.log')
 
 
 def get_latest_version(release_type):
-    latest_ver = "https://pypi.org/pypi/deemon/json"
+    latest_ver = f"https://pypi.org/pypi/{__pypi_name__}/json"
 
     try:
         response = requests.get(latest_ver)

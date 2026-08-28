@@ -14,6 +14,6 @@ parent: Troubleshooting
 {:toc}
 
 ---
-If you're having issues or would like to see how things are running, you can view the log files which are located inside the [deemon config directory](/docs/configuration#configuration-file).
+If you're having issues or would like to see how things are running, you can view the log files which are located inside the [Deemon Redux config directory](/docs/configuration#configuration-file).
 
-As of version 1.0, the logs from deemix are now included (as well as other third-party modules used) in the deemon log file.
+As of version 1.0, the logs from deemix are now included (as well as other third-party modules used) in the Deemon Redux log file.

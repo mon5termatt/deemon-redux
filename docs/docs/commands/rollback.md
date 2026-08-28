@@ -20,7 +20,7 @@ Rolled back the last 2 transaction(s).
 ```
 
 ## Rollback a specific transaction
-By default, deemon shows only the last 10 transactions. To change this, edit _rollback_view_limit_ in your config.json 
+By default, Deemon Redux shows only the last 10 transactions. To change this, edit _rollback_view_limit_ in your config.json 
 file to increase or lower this amount.
 
 ```bash

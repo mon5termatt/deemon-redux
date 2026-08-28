@@ -107,7 +107,7 @@ $ deemon show releases 30
 ```
 
 ## Future releases
-You may have seen `Pending future releases` displayed in the output of the `refresh` command. When deemon detects a release with a release date in the future, it is flagged and is stored in the database until the release date approaches.
+You may have seen `Pending future releases` displayed in the output of the `refresh` command. When Deemon Redux detects a release with a release date in the future, it is flagged and is stored in the database until the release date approaches.
 
 If you'd like to view these future releases, you can use the `show` command:
 

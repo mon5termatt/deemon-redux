@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_GITHUB_REPO = "mon5termatt/deemon"
+DEFAULT_GITHUB_REPO = "mon5termatt/deemon-redux"
 
 
 def _parse_github_remote(url: str) -> Optional[str]:

@@ -15,7 +15,7 @@ class ProfileConfig:
     # TODO move this to utils
     @staticmethod
     def print_header(message: str = None):
-        print("deemon Profile Editor")
+        print("Deemon Redux Profile Editor")
         if message:
             print(":: " + message + "\n")
         else:

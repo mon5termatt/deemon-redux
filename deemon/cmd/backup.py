@@ -7,7 +7,7 @@ from pathlib import Path
 from packaging.version import parse as parse_version
 from tqdm import tqdm
 
-from deemon import __version__
+from deemon import __version__, __appdata_name__
 from deemon.utils import startup, dates
 
 logger = logging.getLogger(__name__)
@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 
 def run(include_logs: bool = False):
     def filter_func(item):
-        includes = ['deemon', 'deemon/config.json', 'deemon/deemon.db']
+        includes = [__appdata_name__, f'{__appdata_name__}/config.json', f'{__appdata_name__}/{__appdata_name__}.db']
         if include_logs:
-            if 'deemon/logs' in item.name:
+            if f'{__appdata_name__}/logs' in item.name:
                 includes.append(item.name)
         if item.name in includes:
             return item
@@ -26,12 +26,12 @@ def run(include_logs: bool = False):
     backup_path = startup.get_backup_dir()
 
     with tarfile.open(backup_path / backup_tar, "w") as tar:
-        tar.add(startup.get_appdata_dir(), arcname='deemon', filter=filter_func)
+        tar.add(startup.get_appdata_dir(), arcname=__appdata_name__, filter=filter_func)
         logger.info(f"Backed up to {backup_path / backup_tar}")
 
 
 def restore():
-    restore_file_list = ['deemon/config.json', 'deemon/deemon.db']
+    restore_file_list = [f'{__appdata_name__}/config.json', f'{__appdata_name__}/{__appdata_name__}.db']
 
     def inspect_tar(fn: Path) -> dict:
         fn_name = fn.name
@@ -95,7 +95,7 @@ def restore():
             return True
 
     def display_backup_list(available_backups: list):
-        print("deemon Backup Manager\n")
+        print("Deemon Redux Backup Manager\n")
         for index, backup in enumerate(available_backups, start=1):
             print(f"{index}. {backup['date']} @ {backup['time']} (ver {backup['version']})")
 

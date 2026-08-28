@@ -17,7 +17,7 @@ parent: Commands
 The `refresh` command is used to check for new releases, update the database and queue new releases with deemix for download. By default, running `refresh` will refresh the both artists and playlists for the active profile.
 
 ## Refresh
-By executing the `refresh` command by itself, deemon will refresh the releases for all artists and playlists contained in your database.
+By executing the `refresh` command by itself, Deemon Redux will refresh the releases for all artists and playlists contained in your database.
 
 > **Note:** For large databases, this can take several minutes to complete.
 
@@ -51,6 +51,6 @@ Let's say for example you want to download all releases released on or after Jan
 user@localhost:~$ deemon refresh --time-machine 2021-12-31
 ```
 
-This tells deemon to first clear any release from the database that is newer than _December 31, 2021_ and then will do a full refresh. Any releases found between _January 1, 2022_ and today's date will be queued for download.
+This tells Deemon Redux to first clear any release from the database that is newer than _December 31, 2021_ and then will do a full refresh. Any releases found between _January 1, 2022_ and today's date will be queued for download.
 
-In the event a release is found with a release date in the future, deemon will save this to the database and flag it is a _future release_. Once the release date of the _future release_ has come, that release will then be queued for download.
+In the event a release is found with a release date in the future, Deemon Redux will save this to the database and flag it is a _future release_. Once the release date of the _future release_ has come, that release will then be queued for download.

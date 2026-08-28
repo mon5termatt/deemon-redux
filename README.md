@@ -1,4 +1,8 @@
-<img src="deemon/assets/images/deemon.png" alt="deemon" width="300">
+# Deemon Redux
+
+<img src="deemon/assets/images/deemon.png" alt="Deemon Redux" width="300">
+
+Deemon Redux is a continuation of the archived [deemon](https://github.com/digitalec/deemon) project — a monitoring utility for new artist releases with email alerts and automated downloading via the deemix library.
 
 ## Development setup
 
@@ -17,7 +21,7 @@ pip install -e .
 
 ### Run without activating `.venv`
 
-If you prefer not to `source .venv/bin/activate`, you can use the repo wrapper:
+If you prefer not to `source .venv/bin/activate`, use the repo wrapper:
 
 ```bash
 ./bin/deemon --help
@@ -45,6 +49,35 @@ For command-specific help:
 deemon monitor -h
 ```
 
+## Docker
+
+Pre-built images are published to GitHub Container Registry on each release:
+
+```bash
+docker pull ghcr.io/mon5termatt/deemon-redux:latest
+```
+
+Example usage:
+
+```bash
+docker run --rm -it \
+  -v deemon-redux-config:/config \
+  -v ~/Music:/downloads \
+  ghcr.io/mon5termatt/deemon-redux:latest --help
+
+docker run --rm -it \
+  -v deemon-redux-config:/config \
+  -v ~/Music:/downloads \
+  ghcr.io/mon5termatt/deemon-redux:latest --init
+
+docker run --rm -it \
+  -v deemon-redux-config:/config \
+  -v ~/Music:/downloads \
+  ghcr.io/mon5termatt/deemon-redux:latest refresh
+```
+
+Configuration is stored in the `/config` volume (mapped to `~/.config/deemon-redux` inside the container).
+
 ## Testing / sanity checks
 
 ```bash
@@ -53,15 +86,12 @@ deemon test -E '<URL regex pattern>'
 deemon test -e
 ```
 
-`deemon test` is intended to exercise exclusion/test logic (and optionally send a test notification using your local config).
-
 ## Documentation
 
-- Online docs: https://mon5termatt.github.io/deemon/
+- Online docs: https://mon5termatt.github.io/deemon-redux/
 - CLI help: `deemon <command> -h`
 - Source docs in-repo under `docs/`
 
 ## Contributing
 
 Open an issue for bugs/feature requests and submit PRs with a short test plan.
-

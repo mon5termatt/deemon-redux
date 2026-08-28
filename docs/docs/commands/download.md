@@ -14,7 +14,7 @@ parent: Commands
 {:toc}
 
 ---
-deemon includes a command line interface to the deemix library allowing you to download directly by artist name, 
+Deemon Redux includes a command line interface to the deemix library allowing you to download directly by artist name, 
 artist ID, album ID or URL.
 
 The `download` command inherits all global settings configured in `config.json` such as bitrate and record type. These settings can be overriden using options available with the `download` command.

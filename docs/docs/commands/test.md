@@ -16,7 +16,7 @@ parent: Commands
 ---
 ## SMTP settings test
 
-deemon provides two ways to verify email notifications.
+Deemon Redux provides two ways to verify email notifications.
 
 ### Plaintext test
 

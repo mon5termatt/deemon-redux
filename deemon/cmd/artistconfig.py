@@ -13,7 +13,7 @@ def print_header(message: str = None):
         _ = system('cls')
     else:
         _ = system('clear')
-    print("deemon Artist Configurator")
+    print("Deemon Redux Artist Configurator")
     if message:
         print(":: " + message + "\n")
     else:

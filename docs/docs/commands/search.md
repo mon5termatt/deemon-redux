@@ -4,7 +4,7 @@ title: search
 parent: Commands
 ---
 
-# deemon Interactive Search Client (dISC)
+# Deemon Redux Interactive Search Client (dISC)
 {: .no_toc }
 
 ## Table of contents
@@ -24,7 +24,7 @@ $ deemon search
 
 You will then be prompted for an artist to search for:
 ```bash
-deemon Interactive Search Client
+Deemon Redux Interactive Search Client
 
 :: Enter an artist to search for:
 ```
