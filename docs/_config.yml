@@ -14,9 +14,13 @@ plugins:
 permalink: pretty
 
 aux_links:
-  Deemon Redux on GitHub:
+  PyPI:
+    - "https://pypi.org/project/deemon-redux/"
+  GitHub:
     - "https://github.com/mon5termatt/deemon-redux"
 
 color_scheme: nil
 search_enabled: true
 heading_anchors: true
+
+footer_content: "Deemon Redux is a continuation of the archived <a href=\"https://github.com/digitalec/deemon\">deemon</a> project."
