@@ -6,7 +6,7 @@ RUN apt-get update -y && \
 
 WORKDIR /app
 
-COPY requirements.txt setup.py MANIFEST.in ./
+COPY requirements.txt setup.py MANIFEST.in README.md ./
 COPY deemon ./deemon
 
 RUN pip3 install --no-cache-dir -r requirements.txt && \

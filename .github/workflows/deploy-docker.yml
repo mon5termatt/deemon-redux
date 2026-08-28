@@ -37,8 +37,8 @@ jobs:
           images: ghcr.io/${{ github.repository_owner }}/deemon-redux
           tags: |
             type=raw,value=latest,enable=${{ github.event_name == 'workflow_dispatch' || !github.event.release.prerelease }}
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=match,pattern=v(\d+\.\d+\.\d+),group=1
+            type=match,pattern=v(\d+\.\d+),group=1
 
       - name: Build and push
         uses: docker/build-push-action@v6
