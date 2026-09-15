@@ -37,14 +37,15 @@ jobs:
           images: ghcr.io/${{ github.repository_owner }}/deemon-redux
           tags: |
             type=raw,value=latest,enable=${{ github.event_name == 'workflow_dispatch' || !github.event.release.prerelease }}
-            type=match,pattern=v(\d+\.\d+\.\d+),group=1
-            type=match,pattern=v(\d+\.\d+),group=1
+            type=match,pattern=v(\d+\.\d+(?:\.\d+)?),group=1
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          # amd64 + arm64 covers servers, Pi 4/5, Apple Silicon.
+          # arm/v7 dropped: pycryptodomex has no wheels and fails to cross-compile under QEMU.
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
