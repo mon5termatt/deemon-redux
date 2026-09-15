@@ -70,7 +70,7 @@ Images are published on each release to GitHub Container Registry.
 docker pull ghcr.io/mon5termatt/deemon-redux:latest
 ```
 
-First-time setup and refresh:
+First-time setup and one-shot refresh:
 
 ```bash
 docker run --rm -it \
@@ -83,6 +83,21 @@ docker run --rm -it \
   -v ~/Music:/downloads \
   ghcr.io/mon5termatt/deemon-redux:latest refresh
 ```
+
+### Scheduled refresh (`RUN_TIME`)
+
+Set `RUN_TIME` (or `run_time`) to `HH:MM` (24-hour) to keep the container running and run `deemon refresh` once per day at that time. Use `TZ` for the timezone:
+
+```bash
+docker run -d --name deemon \
+  -e RUN_TIME=06:00 \
+  -e TZ=America/Chicago \
+  -v deemon-redux-config:/config \
+  -v ~/Music:/downloads \
+  ghcr.io/mon5termatt/deemon-redux:latest
+```
+
+Without `RUN_TIME`, the image behaves like a normal CLI (`deemon <command>`).
 
 Configuration is stored in the `/config` volume (`~/.config/deemon-redux` inside the container).
 

@@ -46,6 +46,17 @@ docker run --rm -it \
   ghcr.io/mon5termatt/deemon-redux:latest refresh
 ```
 
+Schedule a daily refresh with `RUN_TIME` (and optional `TZ`):
+
+```bash
+docker run -d --name deemon \
+  -e RUN_TIME=06:00 \
+  -e TZ=America/Chicago \
+  -v deemon-redux-config:/config \
+  -v ~/Music:/downloads \
+  ghcr.io/mon5termatt/deemon-redux:latest
+```
+
 ## Development
 
 Clone and install from source:
