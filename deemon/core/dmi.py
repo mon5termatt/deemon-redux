@@ -1,5 +1,6 @@
 import logging
 import sys
+import threading
 from pathlib import Path
 
 import deemix
@@ -13,6 +14,7 @@ from deezer import Deezer
 from deezer.api import APIError
 from deezer.gw import GWAPIError
 from deezer.utils import map_user_playlist, LyricsStatus, map_track
+from tqdm import tqdm
 
 from deemon.core import notifier
 from deemon.core.config import Config as config
@@ -22,26 +24,67 @@ logger = logging.getLogger(__name__)
 
 
 class DeemixLogListener:
+    """deemix listener with optional live track X/Y progress.
+
+    Track progress must use tqdm (not logger.info): deemix downloads tracks on
+    worker threads, and log lines from those threads often only flush after the
+    whole album finishes while the outer release bar is active.
+    """
+
     def __init__(self, show_progress=None):
         self.show_progress = config.show_track_progress() if show_progress is None else show_progress
         self.total = 0
-        self.started = 0
-        self._seen_tracks = set()
+        self.completed = 0
+        self._lock = threading.Lock()
+        self._pbar = None
 
     def begin_item(self, download_object):
         """Reset counters for the next album/playlist/track download object."""
+        self.finish_item()
         if getattr(download_object, 'collection', None):
             tracks = download_object.collection.get('tracks') or []
             self.total = len(tracks) or getattr(download_object, 'size', 0) or 0
         else:
             self.total = getattr(download_object, 'size', 1) or 1
-        self.started = 0
-        self._seen_tracks = set()
+        self.completed = 0
+        if self.show_progress and self.total > 0:
+            # Nested under the release bar; leave=False so it clears when done.
+            self._pbar = tqdm(
+                total=self.total,
+                desc=f"     Track 0/{self.total}",
+                leave=False,
+                ascii=" #",
+                dynamic_ncols=True,
+                bar_format="::{desc} {percentage:3.0f}%{postfix}",
+            )
+
+    def finish_item(self):
+        with self._lock:
+            if self._pbar is not None:
+                self._pbar.close()
+                self._pbar = None
+
+    def _track_label(self, data):
+        if not data:
+            return ""
+        artist = data.get('artist') or '?'
+        title = data.get('title') or '?'
+        return f" {artist} - {title}"
+
+    def _on_track_done(self, data=None):
+        with self._lock:
+            if self._pbar is None:
+                return
+            self.completed += 1
+            self._pbar.set_description_str(f"     Track {self.completed}/{self.total}")
+            label = self._track_label(data)
+            if label:
+                self._pbar.set_postfix_str(label[:60], refresh=False)
+            self._pbar.update(1)
 
     def send(self, key, value=None):
         if isinstance(value, dict):
-            if value.get('failed') and value['failed'] == True:
-
+            if value.get('failed') is True and value.get('data'):
                 if value.get('stack') and "WrongGeolocation" in value['stack']:
                     logger.error(f"  [!] Not available in your country: {value['data']['title']} by {value['data']['artist']}")
                 else:
@@ -50,18 +93,20 @@ class DeemixLogListener:
                         logger.info("[X] Exiting due to halt_download_on_error being set to True in config.")
                         sys.exit()
 
-            if self.show_progress and key == "downloadInfo":
-                # getTags fires once when a track starts; concurrent downloads may interleave.
-                if value.get('state') == 'getTags':
-                    data = value.get('data') or {}
-                    track_id = data.get('id')
-                    if track_id is not None and track_id not in self._seen_tracks:
-                        self._seen_tracks.add(track_id)
-                        self.started += 1
-                        artist = data.get('artist', '?')
-                        title = data.get('title', '?')
-                        total = self.total or '?'
-                        logger.info(f"     [{self.started}/{total}] {artist} - {title}")
+            if self.show_progress:
+                if key == "downloadInfo":
+                    # Show which track is currently starting (concurrent downloads may swap).
+                    if value.get('state') == 'getTags' and self._pbar is not None:
+                        with self._lock:
+                            if self._pbar is not None:
+                                self._pbar.set_postfix_str(
+                                    self._track_label(value.get('data'))[:60],
+                                    refresh=True,
+                                )
+                elif key == "updateQueue":
+                    # Advance X/Y when a track finishes (success or failure).
+                    if value.get('downloaded') or value.get('failed'):
+                        self._on_track_done(value.get('data'))
 
         log_string = formatListener(key, value)
         if config.debug_mode():
@@ -107,10 +152,16 @@ class DeemixInterface:
             if isinstance(download_object, list):
                 for obj in download_object:
                         listener.begin_item(obj)
-                        Downloader(self.dz, obj, self.dx_settings, listener=listener).start()
+                        try:
+                            Downloader(self.dz, obj, self.dx_settings, listener=listener).start()
+                        finally:
+                            listener.finish_item()
             else:
                 listener.begin_item(download_object)
-                Downloader(self.dz, download_object, self.dx_settings, listener=listener).start()
+                try:
+                    Downloader(self.dz, download_object, self.dx_settings, listener=listener).start()
+                finally:
+                    listener.finish_item()
 
     def deezer_acct_type(self):
         user_session = self.dz.get_session()['current_user']

@@ -67,7 +67,7 @@ user@localhost:~$ deemon download --monitored
 ```
 
 ### Show per-track progress
-By default, downloads show release-level progress only. To also print each track as `track X / Y` while an album or playlist downloads:
+By default, downloads show release-level progress only. To also show a live `Track X/Y` bar while an album or playlist downloads:
 
 ```bash
 user@localhost:~$ deemon download --progress --url https://www.deezer.com/en/album/1234

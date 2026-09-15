@@ -187,7 +187,7 @@ These settings are needed for deemon to interface with deemix which is a third p
 |**arl**<br><br><br><br>|This is your authorization token required by `deemix` to authenticate your Deezer account. This is stored in a cookie named `arl` in your browser after logging in to Deezer.<br><br>|
 |**check_account_status**<br>options: _true, false_<br><br><br><br>|This option allows you to force account verification before doing a refresh. If you have _bitrate_ set to FLAC and your account type is not HiFi, deemon will exit until you correct the issue (expired ARL or subscription). This option is useful for preventing low quality downloads due to an expired subscription.<br><br>|
 |**halt_download_on_error**<br>options: _true, false_<br><br>|If enabled, deemon will exit if deemix reports any errors when downloading. This prevents releases from being logged in the database so that you can try again later.<br><br>|
-|**show_track_progress**<br>options: _true, false_<br><br>|If enabled, deemon prints per-track progress while downloading (`[3/12] Artist - Track`). You can also enable this for a single run with `deemon download --progress`.<br><br>|
+|**show_track_progress**<br>options: _true, false_<br><br>|If enabled, deemon shows a live per-track progress bar while downloading (`Track 3/12`). You can also enable this for a single run with `deemon download --progress`.<br><br>|
 
 ---
 
