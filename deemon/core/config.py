@@ -50,6 +50,7 @@ DEFAULT_CONFIG = {
         "arl": "",
         "check_account_status": True,
         "halt_download_on_error": False,
+        "show_track_progress": False,
     },
     "smtp_settings": {
         "server": "",
@@ -470,6 +471,10 @@ class Config(object):
     @staticmethod
     def halt_download_on_error() -> bool:
         return Config._CONFIG.get('deemix').get('halt_download_on_error')
+
+    @staticmethod
+    def show_track_progress() -> bool:
+        return Config._CONFIG.get('deemix').get('show_track_progress', False)
 
     @staticmethod
     def smart_search() -> bool:

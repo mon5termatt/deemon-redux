@@ -170,10 +170,11 @@ def test(email, email_html, album_count, exclusions):
 @click.option('-b', '--bitrate', metavar="BITRATE", help='Set custom bitrate for this operation')
 @click.option('-o', '--download-path', metavar="PATH", type=str, help='Specify custom download directory')
 @click.option('-t', '--record-type', metavar="TYPE", type=str, help='Specify record types to download')
+@click.option('--progress', is_flag=True, help='Show per-track progress (track X / Y)')
 def download_command(artist, artist_id, album_id, url, file, bitrate,
                      record_type, download_path, from_date, to_date,
                      monitored, track_id, track_file, artist_file,
-                     album_file):
+                     album_file, progress):
     """
     Download specific artist, album ID or by URL
 
@@ -189,6 +190,8 @@ def download_command(artist, artist_id, album_id, url, file, bitrate,
         config.set('download_path', download_path)
     if record_type:
         config.set('record_type', record_type)
+    if progress:
+        config.set('show_track_progress', True)
 
     artists = dataprocessor.csv_to_list(artist) if artist else None
     artist_ids = [x for x in artist_id] if artist_id else None

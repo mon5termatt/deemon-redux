@@ -22,8 +22,23 @@ logger = logging.getLogger(__name__)
 
 
 class DeemixLogListener:
-    @classmethod
-    def send(cls, key, value=None):
+    def __init__(self, show_progress=None):
+        self.show_progress = config.show_track_progress() if show_progress is None else show_progress
+        self.total = 0
+        self.started = 0
+        self._seen_tracks = set()
+
+    def begin_item(self, download_object):
+        """Reset counters for the next album/playlist/track download object."""
+        if getattr(download_object, 'collection', None):
+            tracks = download_object.collection.get('tracks') or []
+            self.total = len(tracks) or getattr(download_object, 'size', 0) or 0
+        else:
+            self.total = getattr(download_object, 'size', 1) or 1
+        self.started = 0
+        self._seen_tracks = set()
+
+    def send(self, key, value=None):
         if isinstance(value, dict):
             if value.get('failed') and value['failed'] == True:
 
@@ -34,7 +49,20 @@ class DeemixLogListener:
                     if config.halt_download_on_error():
                         logger.info("[X] Exiting due to halt_download_on_error being set to True in config.")
                         sys.exit()
-                        
+
+            if self.show_progress and key == "downloadInfo":
+                # getTags fires once when a track starts; concurrent downloads may interleave.
+                if value.get('state') == 'getTags':
+                    data = value.get('data') or {}
+                    track_id = data.get('id')
+                    if track_id is not None and track_id not in self._seen_tracks:
+                        self._seen_tracks.add(track_id)
+                        self.started += 1
+                        artist = data.get('artist', '?')
+                        title = data.get('title', '?')
+                        total = self.total or '?'
+                        logger.info(f"     [{self.started}/{total}] {artist} - {title}")
+
         log_string = formatListener(key, value)
         if config.debug_mode():
             if log_string: logger.debug(f"[DEEMIX] {log_string}")
@@ -78,8 +106,10 @@ class DeemixInterface:
 
             if isinstance(download_object, list):
                 for obj in download_object:
+                        listener.begin_item(obj)
                         Downloader(self.dz, obj, self.dx_settings, listener=listener).start()
             else:
+                listener.begin_item(download_object)
                 Downloader(self.dz, download_object, self.dx_settings, listener=listener).start()
 
     def deezer_acct_type(self):

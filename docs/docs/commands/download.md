@@ -66,6 +66,15 @@ If you'd like to download all releases by all artists currently being monitored,
 user@localhost:~$ deemon download --monitored
 ```
 
+### Show per-track progress
+By default, downloads show release-level progress only. To also print each track as `track X / Y` while an album or playlist downloads:
+
+```bash
+user@localhost:~$ deemon download --progress --url https://www.deezer.com/en/album/1234
+```
+
+To enable this for every download (including `refresh`), set `deemix.show_track_progress` to `true` in `config.json`.
+
 ### Download a date range
 Introduced in version 2.5, you can now specify a date range when downloading releases.
 
