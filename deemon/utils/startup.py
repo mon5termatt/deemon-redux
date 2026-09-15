@@ -78,14 +78,15 @@ def get_latest_version(release_type):
     latest_ver = f"https://pypi.org/pypi/{__pypi_name__}/json"
 
     try:
-        response = requests.get(latest_ver)
-    except requests.exceptions.ConnectionError:
-        return
-
-    latest_stable = parse_version(response.json()['info']['version'])
+        response = requests.get(latest_ver, timeout=10)
+        response.raise_for_status()
+        payload = response.json()
+        latest_stable = parse_version(payload['info']['version'])
+    except (requests.exceptions.RequestException, KeyError, TypeError, ValueError):
+        return None
 
     if release_type == "beta":
-        all_releases = [parse_version(x) for x in response.json()['releases']]
+        all_releases = [parse_version(x) for x in payload['releases']]
         sorted_releases = sorted(all_releases, reverse=True)
         for release in sorted_releases:
             if "b" in str(release) or "rc" in str(release):
@@ -93,6 +94,7 @@ def get_latest_version(release_type):
                     return release
                 else:
                     return latest_stable
+        return latest_stable
     else:
         return latest_stable
 

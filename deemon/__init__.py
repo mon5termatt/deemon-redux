@@ -3,7 +3,7 @@
 __title__ = 'Deemon Redux'
 __pypi_name__ = 'deemon-redux'
 __appdata_name__ = 'deemon-redux'
-__version__ = '2.27'
+__version__ = '2.28'
 __dbversion__ = '3.7'
 
 from deemon.utils import startup

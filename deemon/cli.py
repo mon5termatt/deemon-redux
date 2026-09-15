@@ -98,29 +98,30 @@ def run(whats_new, init, arl, verbose, profile):
         if time.time() >= next_check or last_checked == 0:
             logger.info(f"Checking for updates ({config.release_channel()})...")
             config.set('update_available', 0, False)
-            latest_ver = str(startup.get_latest_version(config.release_channel()))
-            if latest_ver:
-                db.set_latest_version(latest_ver)
+            latest_ver = startup.get_latest_version(config.release_channel())
+            if latest_ver is not None:
+                db.set_latest_version(str(latest_ver))
             db.set_last_update_check()
         new_version = db.get_latest_ver()
-        if parse_version(new_version) > parse_version(__version__):
-            if parse_version(new_version).major > parse_version(__version__).major:
-                config.set('update_available', new_version, False)
-                print("*" * 80)
-                logger.info(f"{__title__} {parse_version(new_version).major} is available. "
-                            f"Please see the release notes before upgrading.")
-                logger.info(f"Release notes available at: {get_github_releases_url()}")
-                print("*" * 80)
-            else:
-                config.set('update_available', new_version, False)
-                print("*" * 50)
-                logger.info(f"* New version is available: v{__version__} -> v{new_version}")
-                if config.release_channel() == "beta":
-                    logger.info(f"* To upgrade, run `pip install --upgrade --pre {__pypi_name__}`")
+        if new_version and new_version not in ("0", "None"):
+            if parse_version(new_version) > parse_version(__version__):
+                if parse_version(new_version).major > parse_version(__version__).major:
+                    config.set('update_available', new_version, False)
+                    print("*" * 80)
+                    logger.info(f"{__title__} {parse_version(new_version).major} is available. "
+                                f"Please see the release notes before upgrading.")
+                    logger.info(f"Release notes available at: {get_github_releases_url()}")
+                    print("*" * 80)
                 else:
-                    logger.info(f"* To upgrade, run `pip install --upgrade {__pypi_name__}`")
-                print("*" * 50)
-                print("")
+                    config.set('update_available', new_version, False)
+                    print("*" * 50)
+                    logger.info(f"* New version is available: v{__version__} -> v{new_version}")
+                    if config.release_channel() == "beta":
+                        logger.info(f"* To upgrade, run `pip install --upgrade --pre {__pypi_name__}`")
+                    else:
+                        logger.info(f"* To upgrade, run `pip install --upgrade {__pypi_name__}`")
+                    print("*" * 50)
+                    print("")
 
     config.set("start_time", int(time.time()), False)
 
