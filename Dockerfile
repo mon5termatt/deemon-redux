@@ -15,8 +15,8 @@ RUN apt-get update -y && \
         build-essential \
         tzdata && \
     chmod +x /entrypoint.sh && \
-    pip3 install --no-cache-dir -r requirements.txt && \
-    pip3 install --no-cache-dir . && \
+    pip3 install --no-cache-dir --ignore-installed -r requirements.txt && \
+    pip3 install --no-cache-dir --ignore-installed . && \
     apt-get purge -y --auto-remove gcc build-essential python3-dev && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /config /deemix /downloads /import /root/.config && \

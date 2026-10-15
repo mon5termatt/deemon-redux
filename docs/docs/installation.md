@@ -42,6 +42,20 @@ Upgrade an existing install:
 pip install --upgrade deemon-redux
 ```
 
+### Debian / Ubuntu note
+
+If pip fails with `uninstall-no-record-file` for a package like `wheel` (installed by apt), either use a virtualenv or ignore the system copy:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install deemon-redux
+```
+
+```bash
+pip install --upgrade --ignore-installed deemon-redux
+```
+
 ---
 
 ## First run
