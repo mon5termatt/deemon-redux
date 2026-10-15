@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 from deemon.cmd.download import QueueItem, Download
 from deemon.core import db, api, notifier, common
+from deemon.core.ai_content import AiContentChecker
 from deemon.core.config import Config as config
 from deemon.utils import dates, ui, performance
 
@@ -29,6 +30,12 @@ class Refresh:
         self.skip_download = skip_download
         self.download_all = ignore_filters
         self.seen = None
+        self.ai_checker = None
+        if config.exclude_ai_albums():
+            self.ai_checker = AiContentChecker(config.arl())
+            if not self.ai_checker.is_ready():
+                logger.warning("exclude_ai_albums is enabled but no ARL is configured; "
+                               "AI albums cannot be filtered")
 
         if self.time_machine:
             logger.info(f":: Time Machine active: {datetime.strftime(self.time_machine, '%b %d, %Y')}!")
@@ -104,6 +111,8 @@ class Refresh:
                     continue
 
             if self.download_all:
+                if self.should_skip_ai_album(release):
+                    continue
                 self.queue_release(release)
                 continue
 
@@ -119,7 +128,31 @@ class Refresh:
             if not payload['refreshed'] and not self.time_machine:
                 continue
 
+            if self.should_skip_ai_album(release):
+                continue
+
             self.queue_release(release)
+
+    def should_skip_ai_album(self, release: dict) -> bool:
+        """Return True when AI exclusion is enabled and the album is AI-tagged."""
+        if not config.exclude_ai_albums():
+            return False
+        if not self.ai_checker or not self.ai_checker.is_ready():
+            return False
+
+        is_ai = self.ai_checker.is_ai_album(release['id'])
+        if is_ai is True:
+            logger.info(
+                f"    Album \"{release['title']}\" excluded: AI-generated content "
+                f"(album id {release['id']})"
+            )
+            return True
+        if is_ai is None:
+            logger.warning(
+                f"    Unable to verify AI flag for \"{release['title']}\" "
+                f"(album id {release['id']}); allowing download"
+            )
+        return False
 
     def append_database_release(self, new_release: dict):
         self.new_releases.append(new_release)

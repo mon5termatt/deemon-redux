@@ -31,6 +31,7 @@ DEFAULT_CONFIG = {
         "enable_exclusions": True,
         "patterns": [],
         "keywords": [],
+        "exclude_ai_albums": False,
     },
     "new_releases": {
         "release_max_age": 90,
@@ -463,6 +464,10 @@ class Config(object):
             return Config._CONFIG['exclusions']['patterns']
         else:
             return []
+
+    @staticmethod
+    def exclude_ai_albums() -> bool:
+        return bool(Config._CONFIG.get('exclusions', {}).get('exclude_ai_albums', False))
 
     @staticmethod
     def plex_ssl_verify() -> bool:

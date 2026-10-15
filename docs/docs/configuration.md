@@ -50,6 +50,7 @@ not present. For example: to generate this configuration file, run
         "enable_exclusions": true,
         "patterns": [],
         "keywords": [],
+        "exclude_ai_albums": false,
     },
     "new_releases": {
         "release_max_age": 90,
@@ -150,6 +151,7 @@ Exclusions can be setup to ignore releases matching a specific regular expressio
 |**enable_exclusions**<br>options: _true, false_<br><br>|This setting enables exclusion patterns and keywords (below) to filter out releases.<br><br><br>|
 |**patterns**<br>options: _regex_<br><br>|Provide a list of regular expressions to filter out releases.<br><br><br>|
 |**keywords**<br>options: _true, false_<br><br>|Provide a list of keywords to filter out releases (_remix, deluxe, bonus_).<br><br><br>|
+|**exclude_ai_albums**<br>options: _true, false_<br><br>|When enabled, `refresh` skips albums Deezer has tagged as AI-generated content (`hasIdentifiedAIContent`). Requires a valid ARL. Albums are still recorded in the database so they won't be re-detected every run.<br><br>|
 
 ---
 
